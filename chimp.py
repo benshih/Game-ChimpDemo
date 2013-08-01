@@ -59,3 +59,50 @@ class Fist(pygame.sprite.Sprite):
     def unpunch(self):
         '''called to pull the fist back'''
         self.punching = 0
+
+class Chimp(pygame.sprite.Sprite):
+    '''move a monkey across the screen. spins the monkey when punched'''
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self) #call sprite initializer
+        self.image, self.rect = load_image('chimp.bmp', -1)
+        screen = pygame.display.get_surface()
+        self.area = screen.get_rect()
+        self.rect.topleft = 10, 10
+        self.move = 9
+        self.dizzy = 0
+
+    def update(self):
+        '''walk or spin depending on monkey's state'''
+        if self.dizzy:
+            self._spin()
+        else:
+            self._walk()
+
+    def _walk(self):
+        '''move the monkey across the screen, and turn at the ends'''
+        newpos = self.rect.move((self.move, 0))
+        if not self.area.contains(newpos):
+            if self.rect.left < self.area.left or self.rect.right > self.area.right:
+                self.move = -self.move # start moving in the opposite direction if we encounter a boundary
+                newpos = self.rect.move((self.move, 0))
+                self.image = pygame.transform.flip(self.image, 1, 0)
+            self.rect = newpos
+
+    def _spin(self):
+        '''spin the monkey image'''
+        center = self.rect.center
+        self.dizzy += 12
+        if self.dizzy >= 360:
+            self.dizzy = 0
+            self.image = self.original
+        else:
+            rotate = pygame.transform.rotate
+            self.image = rotate(self.original, self.dizzy)
+        self.rect = self.image.get_rect(center = center)
+
+    def punched(self):
+        '''causes the monkey to start spinning'''
+        if not self.dizzy:
+            self.dizzy = 1
+            self.original = self.image
+    
