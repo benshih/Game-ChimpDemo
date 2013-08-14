@@ -1,10 +1,10 @@
-# These statements 
+# These statements import the necessary libraries for the program.
 import os, sys
 import pygame
 from pygame.locals import *
 
-if not pygame.font: print 'warning, fonts disabled'
-if not pygame.mixer: print 'warning, music disabled'
+if not pygame.font: print("warning, fonts disabled")
+if not pygame.mixer: print("warning, music disabled")
 
 # These functions allow us to load the required images and sounds for the game.
 def load_image(name, colorkey=None):
@@ -12,7 +12,7 @@ def load_image(name, colorkey=None):
     try:
         image = pygame.image.load(fullname)
     except pygame.error, message:
-        print 'Cannot load image:', name
+        print('Cannot load image:', name)
         raise SystemExit, message
     image = image.convert()
     if colorkey is not None:
@@ -30,7 +30,7 @@ def load_sound(name):
         try:
             sound = pygame.mixer.Sound(fullname)
         except pygame.error, message:
-            print 'Cannot load sound:', wav
+            print('Cannot load sound: ', wav)
             raise SystemExit, message
         return sound
 
@@ -85,9 +85,11 @@ class Chimp(pygame.sprite.Sprite):
             if self.rect.left < self.area.left or self.rect.right > self.area.right:
                 self.move = -self.move # start moving in the opposite direction if we encounter a boundary
                 newpos = self.rect.move((self.move, 0))
+                # fancy effect that makes the monkey appear to turn in the direction 
                 self.image = pygame.transform.flip(self.image, 1, 0)
             self.rect = newpos
-
+            
+    # underscore for function suggests that the methods should only be used by the Chimp class
     def _spin(self):
         '''spin the monkey image'''
         center = self.rect.center
