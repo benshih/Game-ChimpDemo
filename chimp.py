@@ -11,9 +11,9 @@ def load_image(name, colorkey=None):
     fullname = os.path.join('data', name)
     try:
         image = pygame.image.load(fullname)
-    except pygame.error, message:
+    except pygame.error as message:
         print('Cannot load image:', name)
-        raise SystemExit, message
+        raise SystemExit(message)
     image = image.convert()
     if colorkey is not None:
         if colorkey is -1:
@@ -24,15 +24,15 @@ def load_image(name, colorkey=None):
 def load_sound(name):
     class NoneSound:
         def play(self): pass
-        if not pygame.mixer:
-            return NoneSound()
-        fullname = os.path.join('data', name)
-        try:
-            sound = pygame.mixer.Sound(fullname)
-        except pygame.error, message:
-            print('Cannot load sound: ', wav)
-            raise SystemExit, message
-        return sound
+    if not pygame.mixer or not pygame.mixer.get_init():
+        return NoneSound()
+    fullname = os.path.join('data', name)
+    try:
+        sound = pygame.mixer.Sound(fullname)
+    except pygame.error as message:
+        print('Cannot load sound: ', wav)
+        raise SystemExit(message)
+    return sound
 
 # Classes that represent objects in the game (Fist and Monkey).
 class Fist(pygame.sprite.Sprite):
@@ -108,3 +108,16 @@ class Chimp(pygame.sprite.Sprite):
             self.dizzy = 1
             self.original = self.image
     
+# Initialize program components (the reason why nothing was showing up!)
+pygame.init()
+screen = pygame.display.set_mode((468, 60))
+pygame.display.set_caption('monkey fever')
+pygame.mouse.set_visible(0)
+
+# Create the background for the message text.
+background = pygame.Surface(screen.get_size())
+background = background.convert() # makes sure the background is the same format as the display window, which provides the fastest results
+background.fill((250, 250, 250))
+
+
+
